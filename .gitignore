@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+
+# Virtual environment
+venv/
+env/
+.venv/
+ENV/
+
+# Environment variables (keep secrets safe!)
+.env
+*.env
+
+# IDE settings
+.vscode/
+.idea/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Database files
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
