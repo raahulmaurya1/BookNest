@@ -1,15 +1,15 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
-from sqlalchemy import text
-from app.dependencies import get_db
+# Third-party Libraries
+from fastapi import FastAPI
+
+# Local Project Imports
+from app.routers import auth, books
 
 app = FastAPI(title="BookNest API")
+
+app.include_router(auth.router)
+app.include_router(books.router)
+
 
 @app.get("/")
 def root():
     return {"message": "BookNest API is running"}
-
-@app.get("/db-check")
-def db_check(db: Session = Depends(get_db)):
-    db.execute(text("SELECT 1"))
-    return {"status": "MySQL connected successfully"}
