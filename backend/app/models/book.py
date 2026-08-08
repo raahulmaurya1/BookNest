@@ -11,9 +11,9 @@ from app.database import Base
 
 
 class BookStatus(str, enum.Enum):
-    want_to_read = "want_to_read"
-    reading = "reading"
-    finished = "finished"
+    want_to_read = "Want to Read"
+    reading = "Reading"
+    finished = "Finished"
 
 
 class Book(Base):
@@ -23,7 +23,11 @@ class Book(Base):
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String(255), nullable=False)
     author = Column(String(255), nullable=False)
-    status = Column(Enum(BookStatus), default=BookStatus.want_to_read, nullable=False)
+    status = Column(
+        Enum(BookStatus, values_callable=lambda obj: [e.value for e in obj]),
+        default=BookStatus.want_to_read,
+        nullable=False,
+    )
     total_pages = Column(Integer, nullable=True)
     current_page = Column(Integer, default=0, nullable=False)
     rating = Column(Float, nullable=True)

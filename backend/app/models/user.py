@@ -8,7 +8,8 @@ from sqlalchemy.sql import func
 
 # Local Project Imports
 from app.database import Base
-import app.models.book  # Ensures Book model is registered for relationship mapping
+import app.models.book   # Ensures Book is registered for relationship mapping
+import app.models.shelf  # Ensures Shelf is registered for relationship mapping
 
 
 class User(Base):
@@ -22,4 +23,4 @@ class User(Base):
 
     # Relationships
     books = relationship("Book", back_populates="owner", foreign_keys="Book.owner_id")
-    # shelves and lending relationships will be added when those modules are built
+    shelves = relationship("Shelf", back_populates="owner")
