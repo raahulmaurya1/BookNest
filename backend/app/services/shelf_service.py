@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 # Local Project Imports
 from app.models.shelf import Shelf
+from app.models.shelf_member import ShelfMember, ShelfRole
 from app.models.book import Book
 from app.models.user import User
 from app.schemas.shelf import ShelfCreateRequest, ShelfUpdateRequest
@@ -16,6 +17,16 @@ def create_shelf(request: ShelfCreateRequest, current_user: User, db: Session) -
     )
 
     db.add(new_shelf)
+    db.flush()  # Get new_shelf.id before committing.
+
+    # Automatically add the creator as Owner in shelf_members.
+    owner_membership = ShelfMember(
+        shelf_id=new_shelf.id,
+        user_id=current_user.id,
+        role=ShelfRole.owner,
+    )
+
+    db.add(owner_membership)
     db.commit()
     db.refresh(new_shelf)
 

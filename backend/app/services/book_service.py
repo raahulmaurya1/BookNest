@@ -1,11 +1,14 @@
+# Standard Library
+from datetime import date
+
 # Third-party Libraries
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 # Local Project Imports
-from app.models.book import Book
+from app.models.book import Book, BookStatus
 from app.models.user import User
-from app.schemas.book import BookCreateRequest, BookUpdateRequest
+from app.schemas.book import BookCreateRequest, BookUpdateRequest, ReadingProgressRequest
 
 
 def create_book(request: BookCreateRequest, current_user: User, db: Session) -> Book:
@@ -62,3 +65,37 @@ def delete_book(book_id: int, current_user: User, db: Session) -> None:
 
     db.delete(book)
     db.commit()
+
+
+def update_reading_progress(book_id: int, request: ReadingProgressRequest, current_user: User, db: Session) -> Book:
+    book = get_book(book_id, current_user, db)
+
+    if request.current_page < 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="current_page cannot be negative.",
+        )
+
+    if book.total_pages is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot track progress for a book without total_pages set.",
+        )
+
+    if request.current_page > book.total_pages:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="current_page cannot exceed total_pages.",
+        )
+
+    book.current_page = request.current_page
+
+    if book.current_page == book.total_pages:
+        book.status = BookStatus.finished
+        book.finished_date = date.today()
+
+    db.commit()
+    db.refresh(book)
+
+    return book
+

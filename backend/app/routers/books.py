@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 # Local Project Imports
 from app.dependencies import get_db, get_current_user
-from app.schemas.book import BookCreateRequest, BookUpdateRequest, BookResponse
+from app.schemas.book import BookCreateRequest, BookUpdateRequest, BookResponse, ReadingProgressRequest
 from app.services import book_service
 from app.models.user import User
 
@@ -54,3 +54,13 @@ def delete_book(
     current_user: User = Depends(get_current_user),
 ):
     book_service.delete_book(book_id, current_user, db)
+
+
+@router.patch("/{book_id}/progress", response_model=BookResponse)
+def update_reading_progress(
+    book_id: int,
+    request: ReadingProgressRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return book_service.update_reading_progress(book_id, request, current_user, db)

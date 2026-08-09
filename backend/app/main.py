@@ -2,13 +2,14 @@
 from fastapi import FastAPI
 
 # Local Project Imports
-from app.routers import auth, books, shelves
+from app.routers import auth, books, shelves, shelf_members
 
 app = FastAPI(title="BookNest API")
 
 app.include_router(auth.router)
 app.include_router(books.router)
 app.include_router(shelves.router)
+app.include_router(shelf_members.router)
 
 
 @app.get("/")
