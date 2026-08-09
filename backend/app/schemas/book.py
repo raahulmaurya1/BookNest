@@ -28,6 +28,10 @@ class BookUpdateRequest(BaseModel):
     finished_date: Optional[date] = None
 
 
+class ReadingProgressRequest(BaseModel):
+    current_page: int
+
+
 class BookResponse(BaseModel):
     id: int
     owner_id: int
