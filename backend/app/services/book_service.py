@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.models.book import Book, BookStatus
 from app.models.user import User
 from app.schemas.book import BookCreateRequest, BookUpdateRequest, ReadingProgressRequest
+from app.services import activity_service
 
 
 def create_book(request: BookCreateRequest, current_user: User, db: Session) -> Book:
@@ -22,6 +23,7 @@ def create_book(request: BookCreateRequest, current_user: User, db: Session) -> 
     )
 
     db.add(new_book)
+    activity_service.log_activity(current_user.id, "added_book", db, reference_id=None)
     db.commit()
     db.refresh(new_book)
 
@@ -63,6 +65,7 @@ def update_book(book_id: int, request: BookUpdateRequest, current_user: User, db
 def delete_book(book_id: int, current_user: User, db: Session) -> None:
     book = get_book(book_id, current_user, db)
 
+    activity_service.log_activity(current_user.id, "deleted_book", db, reference_id=book_id)
     db.delete(book)
     db.commit()
 
@@ -93,6 +96,9 @@ def update_reading_progress(book_id: int, request: ReadingProgressRequest, curre
     if book.current_page == book.total_pages:
         book.status = BookStatus.finished
         book.finished_date = date.today()
+        activity_service.log_activity(current_user.id, "finished_book", db, reference_id=book_id)
+    else:
+        activity_service.log_activity(current_user.id, "updated_progress", db, reference_id=book_id)
 
     db.commit()
     db.refresh(book)

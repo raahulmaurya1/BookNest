@@ -12,6 +12,7 @@ from app.models.lending import Lending
 from app.models.shelf_member import ShelfMember
 from app.models.user import User
 from app.schemas.dashboard import DashboardResponse
+from app.services import activity_service
 
 
 def get_dashboard_stats(current_user: User, db: Session) -> DashboardResponse:
@@ -79,8 +80,11 @@ def get_dashboard_stats(current_user: User, db: Session) -> DashboardResponse:
         .count()
     )
 
-    # 7. Recent Activity (Placeholder for Feature 8)
-    recent_activity = []
+    # 7. Recent Activity — fetch from activity log; map to action strings
+    # (DashboardResponse.recent_activity is list[str]; schema is preserved unchanged).
+    recent_activity = [
+        a.action for a in activity_service.get_user_activity(current_user, db, limit=5)
+    ]
 
     return DashboardResponse(
         total_books=total_books,

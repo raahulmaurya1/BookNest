@@ -27,5 +27,7 @@ class ShelfMember(Base):
     )
 
     # Relationships
-    shelf = relationship("Shelf", backref="members")
+    # passive_deletes=True tells SQLAlchemy to rely on the DB's ON DELETE CASCADE
+    # rather than trying to nullify shelf_id (which is part of the composite PK).
+    shelf = relationship("Shelf", backref="members", passive_deletes=True)
     user = relationship("User", backref="shared_shelves")

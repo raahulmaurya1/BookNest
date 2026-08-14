@@ -7,6 +7,8 @@ from app.models.shelf import Shelf
 from app.models.shelf_member import ShelfMember, ShelfRole
 from app.models.user import User
 from app.schemas.shelf_member import AddMemberRequest, UpdateMemberRoleRequest
+from app.services import activity_service
+from app.services.websocket_service import manager
 
 
 def _get_shelf_or_404(shelf_id: int, db: Session) -> Shelf:
@@ -68,8 +70,16 @@ def add_member(shelf_id: int, request: AddMemberRequest, current_user: User, db:
     )
 
     db.add(new_member)
+    activity_service.log_activity(current_user.id, "shelf_shared", db, reference_id=shelf_id)
     db.commit()
     db.refresh(new_member)
+
+    # Notify the invited user in real time via the thread-safe wrapper.
+    manager.notify_user_sync(request.user_id, {
+        "event": "added_to_shelf",
+        "shelf_id": shelf_id,
+        "role": request.role.value,
+    })
 
     return new_member
 
@@ -113,7 +123,7 @@ def update_member_role(
             detail="Member not found on this shelf.",
         )
 
-    # Prevent changing the Owner role — ownership transfer is not supported.
+    # Prevent changing the Owner role - ownership transfer is not supported.
     if member.role == ShelfRole.owner:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -121,6 +131,7 @@ def update_member_role(
         )
 
     member.role = request.role
+    activity_service.log_activity(current_user.id, "role_changed", db, reference_id=shelf_id)
 
     db.commit()
     db.refresh(member)
@@ -150,5 +161,6 @@ def remove_member(shelf_id: int, user_id: int, current_user: User, db: Session) 
             detail="The Owner cannot be removed from the shelf.",
         )
 
+    activity_service.log_activity(current_user.id, "collaborator_removed", db, reference_id=shelf_id)
     db.delete(member)
     db.commit()
