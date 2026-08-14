@@ -10,6 +10,8 @@ from app.models.book import Book
 from app.models.user import User
 from app.models.lending import Lending
 from app.schemas.lending import LendBookRequest
+from app.services import activity_service
+from app.services.websocket_service import manager
 
 
 def lend_book(book_id: int, request: LendBookRequest, current_user: User, db: Session) -> Lending:
@@ -56,8 +58,16 @@ def lend_book(book_id: int, request: LendBookRequest, current_user: User, db: Se
     )
 
     db.add(new_lending)
+    activity_service.log_activity(current_user.id, "lent_book", db, reference_id=book_id)
     db.commit()
     db.refresh(new_lending)
+
+    # Notify the borrower in real time (thread-safe — called from sync threadpool).
+    manager.notify_user_sync(borrower.id, {
+        "event": "book_lent_to_you",
+        "book_id": book_id,
+        "lending_id": new_lending.id,
+    })
 
     return new_lending
 
@@ -85,9 +95,16 @@ def return_book(lending_id: int, current_user: User, db: Session) -> Lending:
         )
 
     lending.returned_date = datetime.utcnow()
-    
+    activity_service.log_activity(current_user.id, "returned_book", db, reference_id=lending.book_id)
     db.commit()
     db.refresh(lending)
+
+    # Notify the borrower in real time (thread-safe — called from sync threadpool).
+    manager.notify_user_sync(lending.borrower_id, {
+        "event": "book_returned",
+        "book_id": lending.book_id,
+        "lending_id": lending.id,
+    })
 
     return lending
 

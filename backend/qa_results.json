@@ -1,0 +1,689 @@
+{
+  "results": [
+    {
+      "status": "PASS",
+      "area": "STARTUP & DATABASE",
+      "test_name": "FastAPI Server Running",
+      "expected": "200 OK with running message",
+      "actual": "Status: 200, Response: {\"message\":\"BookNest API is running\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "STARTUP & DATABASE",
+      "test_name": "MySQL Connection",
+      "expected": "Connection succeeds",
+      "actual": "Success"
+    },
+    {
+      "status": "PASS",
+      "area": "STARTUP & DATABASE",
+      "test_name": "All Tables Exist",
+      "expected": "No missing tables",
+      "actual": "Tables found: ['activity', 'books', 'lending', 'shelf_books', 'shelf_members', 'shelves', 'users']. Missing: []"
+    },
+    {
+      "status": "PASS",
+      "area": "STARTUP & DATABASE",
+      "test_name": "Composite PK on shelf_members",
+      "expected": "Composite PK (shelf_id, user_id)",
+      "actual": "Actual PK: ['shelf_id', 'user_id']"
+    },
+    {
+      "status": "PASS",
+      "area": "STARTUP & DATABASE",
+      "test_name": "Unique constraints users.email",
+      "expected": "Unique index on email",
+      "actual": "[{'name': 'email', 'column_names': ['email'], 'unique': True, 'type': 'UNIQUE'}]"
+    },
+    {
+      "status": "PASS",
+      "area": "STARTUP & DATABASE",
+      "test_name": "Nullable Fields in Books",
+      "expected": "total_pages, rating, finished_date are nullable",
+      "actual": "total_pages: True, rating: True, finished_date: True"
+    },
+    {
+      "status": "PASS",
+      "area": "STARTUP & DATABASE",
+      "test_name": "Cascade & Shelf Book Isolation",
+      "expected": "Deleting shelf does not delete book, clears junction and members",
+      "actual": "book_exists: True, junction_cleared: True, members_cleared: True"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "POST /auth/register - Valid",
+      "expected": "201 Created",
+      "actual": "Status: 201, Body: {\"id\":60,\"name\":\"User A\",\"email\":\"qa_user_a_13339@test.com\",\"created_at\":\"2026-08-14T12:46:19\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "POST /auth/register - Duplicate Email",
+      "expected": "400 Bad Request",
+      "actual": "Status: 400, Body: {\"detail\":\"A user with this email already exists.\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "POST /auth/register - Invalid Email format",
+      "expected": "422 Unprocessable Entity",
+      "actual": "Status: 422, Body: {\"detail\":[{\"type\":\"value_error\",\"loc\":[\"body\",\"email\"],\"msg\":\"value is not a valid email address: An email address must have an @-sign.\",\"input\":\"invalid-email-format\",\"ctx\":{\"reason\":\"An email address must have an @-sign.\"}}]}"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "POST /auth/register - Missing Fields",
+      "expected": "422 Unprocessable Entity",
+      "actual": "Status: 422"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "POST /auth/login - Correct Credentials",
+      "expected": "200 OK + access_token",
+      "actual": "Status: 200, Response: {\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MCIsImV4cCI6MTc4NjY5NTM4MH0.zho5D195SNZerMTQIFbXTrZukHPuHDfMi3IBzRzKF7M\",\"token_type\":\"bearer\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "POST /auth/login - Wrong Password",
+      "expected": "401 Unauthorized",
+      "actual": "Status: 401"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "POST /auth/login - Unknown Email",
+      "expected": "401 Unauthorized",
+      "actual": "Status: 401"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "GET /auth/me - Valid JWT",
+      "expected": "200 OK + correct user info",
+      "actual": "Status: 200, Body: {\"id\":60,\"name\":\"User A\",\"email\":\"qa_user_a_13339@test.com\",\"created_at\":\"2026-08-14T12:46:19\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "GET /auth/me - Missing Token",
+      "expected": "401 Unauthorized",
+      "actual": "Status: 401"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "GET /auth/me - Invalid Token",
+      "expected": "401 Unauthorized",
+      "actual": "Status: 401"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "No Password Hash in Responses",
+      "expected": "Responses do not contain password/hash",
+      "actual": "Reg response keys: ['id', 'name', 'email', 'created_at']"
+    },
+    {
+      "status": "PASS",
+      "area": "AUTHENTICATION",
+      "test_name": "Password is Password Hashed (Not Plain)",
+      "expected": "Stored as hash, not plain text",
+      "actual": "Stored: $2b$12$2IJPPzGS9ysEJhbMm933l.iqJPy2Fy9ckZgeCmLORz/ODM1ytkn6u"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "POST /books/ - Create Book 1 (Reading)",
+      "expected": "201 Created",
+      "actual": "Status: 201"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "GET /books/ - List Books",
+      "expected": "200 OK + list of 2 books",
+      "actual": "Length: 2"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "GET /books/{id} - Get Book Details",
+      "expected": "200 OK + correct title",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "PATCH /books/{id} - Update Details",
+      "expected": "200 OK + updated notes and rating",
+      "actual": "Status: 200, Body: {\"id\":72,\"owner_id\":60,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Reading\",\"total_pages\":200,\"current_page\":0,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"finished_date\":null,\"created_at\":\"2026-08-14T12:46:20\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "Isolation - User B reads User A's Book",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "Isolation - User B modifies User A's Book",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "Isolation - User B deletes User A's Book",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "POST /books/ - Invalid Status enum",
+      "expected": "422 Unprocessable Entity",
+      "actual": "Status: 422"
+    },
+    {
+      "status": "PASS",
+      "area": "BOOKS",
+      "test_name": "GET /books/{id} - Invalid Book ID",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "READING PROGRESS",
+      "test_name": "PATCH /progress - current_page = 0",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "READING PROGRESS",
+      "test_name": "PATCH /progress - normal progress",
+      "expected": "200 OK + status Reading",
+      "actual": "Status: 200, Body: {\"id\":72,\"owner_id\":60,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Reading\",\"total_pages\":200,\"current_page\":100,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"finished_date\":null,\"created_at\":\"2026-08-14T12:46:20\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "READING PROGRESS",
+      "test_name": "PATCH /progress - Negative Page",
+      "expected": "400 Bad Request",
+      "actual": "Status: 400, Body: {\"detail\":\"current_page cannot be negative.\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "READING PROGRESS",
+      "test_name": "PATCH /progress - Exceed Total Pages",
+      "expected": "400 Bad Request",
+      "actual": "Status: 400"
+    },
+    {
+      "status": "PASS",
+      "area": "READING PROGRESS",
+      "test_name": "PATCH /progress - total_pages missing in book",
+      "expected": "400 Bad Request",
+      "actual": "Status: 400, Body: {\"detail\":\"Cannot track progress for a book without total_pages set.\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "READING PROGRESS",
+      "test_name": "PATCH /progress - current_page == total_pages",
+      "expected": "200 OK + Finished + finished_date set",
+      "actual": "Status: 200, Body: {\"id\":72,\"owner_id\":60,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Finished\",\"total_pages\":200,\"current_page\":200,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"finished_date\":\"2026-08-14\",\"created_at\":\"2026-08-14T12:46:20\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "READING PROGRESS",
+      "test_name": "Isolation - User B updates User A's Book progress",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "POST /shelves/ - Create Shelf",
+      "expected": "201 Created",
+      "actual": "Status: 201"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "GET /shelves/ - List Shelves",
+      "expected": "200 OK + 1 shelf",
+      "actual": "Status: 200, Count: 1"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "GET /shelves/{id} - Shelf Details",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "PATCH /shelves/{id} - Rename Shelf",
+      "expected": "200 OK + renamed",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "POST /shelves/{id}/books/{bid} - Add Book",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "POST /shelves/{id}/books/{bid} - Add Same Book Twice",
+      "expected": "400 Bad Request",
+      "actual": "Status: 400, Msg: {\"detail\":\"Book is already on this shelf.\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "POST /shelves/{id}/books/{bid} - Add Other User's Book",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "Isolation - User B reads User A's Shelf",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "SHELVES",
+      "test_name": "DELETE /shelves/{id}/books/{bid} - Remove Book",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Invite User B as Viewer",
+      "expected": "201 Created",
+      "actual": "Status: 201, Body: {\"user_id\":61,\"name\":\"User B\",\"email\":\"qa_user_b_13339@test.com\",\"role\":\"Viewer\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Viewer can view shelf details",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Viewer can view shelf members list",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Viewer cannot add book to shelf",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Viewer cannot change member roles",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Viewer cannot remove shelf members",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Viewer cannot delete shelf",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Owner updates User B to Editor",
+      "expected": "200 OK + role Editor",
+      "actual": "Status: 200, Response: {\"user_id\":61,\"name\":\"User B\",\"email\":\"qa_user_b_13339@test.com\",\"role\":\"Editor\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Editor can add book to shelf",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Editor cannot delete shelf",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Editor cannot change member roles",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Editor cannot remove members",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Owner can add/manage members",
+      "expected": "201 Created",
+      "actual": "Status: 201"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Owner removes User B",
+      "expected": "204 No Content",
+      "actual": "Status: 204"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Removed user loses access to members list",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "SHARED SHELVES / RBAC",
+      "test_name": "Unauthorized users cannot access members list",
+      "expected": "401 Unauthorized",
+      "actual": "Status: 401"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "POST /lending/{bid} - Valid Borrower",
+      "expected": "201 Created",
+      "actual": "Status: 201, Body: {\"id\":28,\"book_id\":76,\"owner_id\":60,\"borrower_id\":61,\"lent_date\":\"2026-08-14T07:16:22\",\"returned_date\":null}"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "POST /lending/{bid} - Unknown Borrower",
+      "expected": "404 Not Found",
+      "actual": "Status: 404, Body: {\"detail\":\"Borrower not found with the provided email.\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "POST /lending/{bid} - Self Lending",
+      "expected": "400 Bad Request",
+      "actual": "Status: 400, Body: {\"detail\":\"You cannot lend a book to yourself.\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "POST /lending/{bid} - Lend Other User's Book",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "POST /lending/{bid} - Lend Already Lent Book",
+      "expected": "400 Bad Request",
+      "actual": "Status: 400"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "GET /lending/lent - List Lent Books",
+      "expected": "200 OK + list of 1",
+      "actual": "Status: 200, Count: 1"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "GET /lending/borrowed - List Borrowed Books",
+      "expected": "200 OK + list of 1",
+      "actual": "Status: 200, Count: 1"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "PATCH /lending/{id}/return - Unauthorized User",
+      "expected": "403 Forbidden",
+      "actual": "Status: 403"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "PATCH /lending/{id}/return - Owner Return",
+      "expected": "200 OK + returned_date set",
+      "actual": "Status: 200, Body: {\"id\":28,\"book_id\":76,\"owner_id\":60,\"borrower_id\":61,\"lent_date\":\"2026-08-14T07:16:22\",\"returned_date\":\"2026-08-14T07:16:22\"}"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "PATCH /lending/{id}/return - Return Already Returned",
+      "expected": "400 Bad Request",
+      "actual": "Status: 400"
+    },
+    {
+      "status": "PASS",
+      "area": "LENDING",
+      "test_name": "Lend Book Again After Return",
+      "expected": "201 Created",
+      "actual": "Status: 201"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "GET /activity/ - Fetch Activity Log",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Activity 'added_book' recorded",
+      "expected": "Yes",
+      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Activity 'finished_book' recorded",
+      "expected": "Yes",
+      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Activity 'deleted_book' recorded",
+      "expected": "Yes",
+      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Activity 'lent_book' recorded",
+      "expected": "Yes",
+      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Activity 'returned_book' recorded",
+      "expected": "Yes",
+      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Activity 'shelf_shared' recorded",
+      "expected": "Yes",
+      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Activity 'role_changed' recorded",
+      "expected": "Yes",
+      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Activity 'collaborator_removed' recorded",
+      "expected": "Yes",
+      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "ACTIVITY LOG",
+      "test_name": "Isolation - User B cannot see User A's activity",
+      "expected": "User B sees only their user_id activities",
+      "actual": "[61]"
+    },
+    {
+      "status": "PASS",
+      "area": "DASHBOARD",
+      "test_name": "GET /dashboard/ - Fetch Dashboard",
+      "expected": "200 OK",
+      "actual": "Status: 200"
+    },
+    {
+      "status": "PASS",
+      "area": "DASHBOARD",
+      "test_name": "Verify total_books",
+      "expected": "Matches DB: 4",
+      "actual": "Dashboard: 4"
+    },
+    {
+      "status": "PASS",
+      "area": "DASHBOARD",
+      "test_name": "Verify finished_count",
+      "expected": "Matches DB: 1",
+      "actual": "Dashboard: 1"
+    },
+    {
+      "status": "PASS",
+      "area": "DASHBOARD",
+      "test_name": "Verify reading_count",
+      "expected": "Matches DB: 0",
+      "actual": "Dashboard: 0"
+    },
+    {
+      "status": "PASS",
+      "area": "DASHBOARD",
+      "test_name": "Verify want_to_read_count",
+      "expected": "Matches DB: 3",
+      "actual": "Dashboard: 3"
+    },
+    {
+      "status": "PASS",
+      "area": "DASHBOARD",
+      "test_name": "Verify recent_activity is not empty",
+      "expected": "Contains recent activity logs",
+      "actual": "Recent activity: ['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book']"
+    },
+    {
+      "status": "PASS",
+      "area": "WEBSOCKETS",
+      "test_name": "Valid JWT Connection",
+      "expected": "Connection establishes",
+      "actual": "Connected: True"
+    },
+    {
+      "status": "PASS",
+      "area": "WEBSOCKETS",
+      "test_name": "Block Invalid Connections",
+      "expected": "Rejects connection",
+      "actual": "Handshake status 403 Forbidden -+-+- {'date': 'Fri, 14 Aug 2026 07:16:21 GMT', 'connection': 'close', 'content-length': '0', 'content-type': 'text/plain; charset=utf-8'} -+-+- b''"
+    },
+    {
+      "status": "PASS",
+      "area": "WEBSOCKETS",
+      "test_name": "Event received: added_to_shelf",
+      "expected": "User B receives added_to_shelf notification",
+      "actual": "Messages: [{'event': 'added_to_shelf', 'shelf_id': 39, 'role': 'Viewer'}]"
+    },
+    {
+      "status": "PASS",
+      "area": "WEBSOCKETS",
+      "test_name": "Event received: book_lent_to_you",
+      "expected": "User B receives book_lent_to_you notification",
+      "actual": "Messages: [{'event': 'book_lent_to_you', 'book_id': 77, 'lending_id': 30}]"
+    },
+    {
+      "status": "PASS",
+      "area": "SECURITY",
+      "test_name": "No JWT access",
+      "expected": "401 Unauthorized",
+      "actual": "Status: 401"
+    },
+    {
+      "status": "PASS",
+      "area": "SECURITY",
+      "test_name": "Invalid JWT access",
+      "expected": "401 Unauthorized",
+      "actual": "Status: 401"
+    },
+    {
+      "status": "PASS",
+      "area": "SECURITY",
+      "test_name": "User A accessing User B's book",
+      "expected": "404 Not Found",
+      "actual": "Status: 404"
+    },
+    {
+      "status": "PASS",
+      "area": "ERROR HANDLING",
+      "test_name": "Invalid path parameter format",
+      "expected": "422 Unprocessable Entity",
+      "actual": "Status: 422"
+    },
+    {
+      "status": "PASS",
+      "area": "ERROR HANDLING",
+      "test_name": "No traceback exposed",
+      "expected": "No stack trace in client response",
+      "actual": "{\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"path\",\"book_id\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"not-an-integer\"}]}"
+    },
+    {
+      "status": "PASS",
+      "area": "COMPLETE USER JOURNEY",
+      "test_name": "Full flow execution",
+      "expected": "All steps pass or fail gracefully without database crashes",
+      "actual": "Success: True"
+    }
+  ],
+  "failures": [],
+  "summary": {
+    "total": 97,
+    "passed": 97,
+    "failed": 0
+  }
+}
