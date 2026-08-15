@@ -1,5 +1,5 @@
 # Third-party Libraries
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 
 # Local Project Imports
@@ -64,3 +64,24 @@ def update_reading_progress(
     current_user: User = Depends(get_current_user),
 ):
     return book_service.update_reading_progress(book_id, request, current_user, db)
+
+
+@router.post("/{book_id}/pdf", response_model=BookResponse)
+
+def upload_book_pdf(
+    book_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    file_bytes = file.file.read()
+    return book_service.upload_book_pdf(book_id, file_bytes, file.filename, current_user, db)
+
+
+@router.get("/{book_id}/pdf")
+def get_book_pdf_url(
+    book_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return book_service.get_book_pdf_url(book_id, current_user, db)

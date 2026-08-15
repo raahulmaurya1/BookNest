@@ -23,3 +23,11 @@ class Lending(Base):
     book = relationship("Book", backref="lendings")
     owner = relationship("User", foreign_keys=[owner_id], backref="books_lent")
     borrower = relationship("User", foreign_keys=[borrower_id], backref="books_borrowed")
+
+    @property
+    def owner_name(self) -> str:
+        return self.owner.name if self.owner else None
+
+    @property
+    def borrower_name(self) -> str:
+        return self.borrower.name if self.borrower else None

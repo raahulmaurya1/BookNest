@@ -42,6 +42,8 @@ class BookResponse(BaseModel):
     current_page: int
     rating: Optional[float]
     notes: Optional[str]
+    pdf_path: Optional[str] = None
+    pdf_url: Optional[str] = None
     finished_date: Optional[date]
     created_at: datetime
 

@@ -14,7 +14,9 @@ class LendingResponse(BaseModel):
     id: int
     book_id: int
     owner_id: int
+    owner_name: Optional[str] = None
     borrower_id: int
+    borrower_name: Optional[str] = None
     lent_date: datetime
     returned_date: Optional[datetime]
 

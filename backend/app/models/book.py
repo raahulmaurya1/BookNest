@@ -32,6 +32,7 @@ class Book(Base):
     current_page = Column(Integer, default=0, nullable=False)
     rating = Column(Float, nullable=True)
     notes = Column(Text, nullable=True)
+    pdf_path = Column(String(512), nullable=True)
     finished_date = Column(Date, nullable=True)
     created_at = Column(DateTime, default=func.now(), nullable=False)
 
