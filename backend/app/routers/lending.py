@@ -22,13 +22,13 @@ def lend_book(
     return lending_service.lend_book(book_id, request, current_user, db)
 
 
-@router.patch("/{lending_id}/return", response_model=LendingResponse)
+@router.patch("/{book_id}/return", response_model=LendingResponse)
 def return_book(
-    lending_id: int,
+    book_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return lending_service.return_book(lending_id, current_user, db)
+    return lending_service.return_book(book_id, current_user, db)
 
 
 @router.get("/lent", response_model=list[LendingResponse])

@@ -1,9 +1,10 @@
 # Third-party Libraries
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 # Local Project Imports
-from app.models.shelf import Shelf
+from app.models.shelf import Shelf, shelf_books
 from app.models.book import Book
 from app.models.shelf_member import ShelfMember, ShelfRole
 from app.models.user import User
@@ -58,8 +59,8 @@ def get_shelf(shelf_id: int, current_user: User, db: Session) -> Shelf:
 
     if not membership:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Shelf not found.",
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have access to this shelf",
         )
 
     return shelf
@@ -91,6 +92,11 @@ def delete_shelf(shelf_id: int, current_user: User, db: Session) -> None:
             detail="Only the shelf Owner can perform this action.",
         )
 
+    # Remove associations explicitly to avoid FK constraint/cascade issues
+    db.execute(shelf_books.delete().where(shelf_books.c.shelf_id == shelf_id))
+    db.query(ShelfMember).filter(ShelfMember.shelf_id == shelf_id).delete(synchronize_session=False)
+
+    # Now safe to delete the shelf
     db.delete(shelf)
     db.commit()
 
@@ -110,11 +116,8 @@ def add_book_to_shelf(shelf_id: int, book_id: int, current_user: User, db: Sessi
                 detail="Viewers cannot modify shelf contents.",
             )
 
-    # Verify the user owns the book before adding it to the shelf.
-    book = db.query(Book).filter(
-        Book.id == book_id,
-        Book.owner_id == current_user.id,
-    ).first()
+    # Verify the book exists before adding it to the shelf.
+    book = db.query(Book).filter(Book.id == book_id).first()
 
     if not book:
         raise HTTPException(
@@ -150,10 +153,7 @@ def remove_book_from_shelf(shelf_id: int, book_id: int, current_user: User, db: 
                 detail="Viewers cannot modify shelf contents.",
             )
 
-    book = db.query(Book).filter(
-        Book.id == book_id,
-        Book.owner_id == current_user.id,
-    ).first()
+    book = db.query(Book).filter(Book.id == book_id).first()
 
     if not book:
         raise HTTPException(

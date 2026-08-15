@@ -11,8 +11,11 @@ from app.auth.jwt import create_access_token
 
 
 def register_user(request: UserRegisterRequest, db: Session) -> User:
+    # Normalize email: lowercase and strip whitespace before any DB operations.
+    normalized_email = request.email.strip().lower()
+
     # Check if a user with this email already exists.
-    existing_user = db.query(User).filter(User.email == request.email).first()
+    existing_user = db.query(User).filter(User.email == normalized_email).first()
 
     if existing_user:
         raise HTTPException(
@@ -24,7 +27,7 @@ def register_user(request: UserRegisterRequest, db: Session) -> User:
 
     new_user = User(
         name=request.name,
-        email=request.email,
+        email=normalized_email,
         password_hash=hashed,
     )
 
@@ -36,7 +39,8 @@ def register_user(request: UserRegisterRequest, db: Session) -> User:
 
 
 def login_user(request: UserLoginRequest, db: Session) -> dict:
-    user = db.query(User).filter(User.email == request.email).first()
+    normalized_email = request.email.strip().lower()
+    user = db.query(User).filter(User.email == normalized_email).first()
 
     # Use a generic error message to avoid revealing whether the email exists.
     if not user or not verify_password(request.password, user.password_hash):

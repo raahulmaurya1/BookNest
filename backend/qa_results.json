@@ -54,7 +54,7 @@
       "area": "AUTHENTICATION",
       "test_name": "POST /auth/register - Valid",
       "expected": "201 Created",
-      "actual": "Status: 201, Body: {\"id\":60,\"name\":\"User A\",\"email\":\"qa_user_a_13339@test.com\",\"created_at\":\"2026-08-14T12:46:19\"}"
+      "actual": "Status: 201, Body: {\"id\":110,\"name\":\"User A\",\"email\":\"qa_user_a_17105@test.com\",\"created_at\":\"2026-08-15T14:55:58\"}"
     },
     {
       "status": "PASS",
@@ -82,7 +82,7 @@
       "area": "AUTHENTICATION",
       "test_name": "POST /auth/login - Correct Credentials",
       "expected": "200 OK + access_token",
-      "actual": "Status: 200, Response: {\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MCIsImV4cCI6MTc4NjY5NTM4MH0.zho5D195SNZerMTQIFbXTrZukHPuHDfMi3IBzRzKF7M\",\"token_type\":\"bearer\"}"
+      "actual": "Status: 200, Response: {\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTAiLCJleHAiOjE3ODY3ODk1NTl9.9naqJ9EhAPDl9Y4ug3QPhJWhWmvEeZVx5CnGj_CbFg0\",\"token_type\":\"bearer\"}"
     },
     {
       "status": "PASS",
@@ -103,7 +103,7 @@
       "area": "AUTHENTICATION",
       "test_name": "GET /auth/me - Valid JWT",
       "expected": "200 OK + correct user info",
-      "actual": "Status: 200, Body: {\"id\":60,\"name\":\"User A\",\"email\":\"qa_user_a_13339@test.com\",\"created_at\":\"2026-08-14T12:46:19\"}"
+      "actual": "Status: 200, Body: {\"id\":110,\"name\":\"User A\",\"email\":\"qa_user_a_17105@test.com\",\"created_at\":\"2026-08-15T14:55:58\"}"
     },
     {
       "status": "PASS",
@@ -131,7 +131,7 @@
       "area": "AUTHENTICATION",
       "test_name": "Password is Password Hashed (Not Plain)",
       "expected": "Stored as hash, not plain text",
-      "actual": "Stored: $2b$12$2IJPPzGS9ysEJhbMm933l.iqJPy2Fy9ckZgeCmLORz/ODM1ytkn6u"
+      "actual": "Stored: $2b$12$MqpRNIFowCN1aC7aZIpNmeWbzeni3XAb9M8lFRYaH4ssTFdb37v86"
     },
     {
       "status": "PASS",
@@ -159,7 +159,7 @@
       "area": "BOOKS",
       "test_name": "PATCH /books/{id} - Update Details",
       "expected": "200 OK + updated notes and rating",
-      "actual": "Status: 200, Body: {\"id\":72,\"owner_id\":60,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Reading\",\"total_pages\":200,\"current_page\":0,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"finished_date\":null,\"created_at\":\"2026-08-14T12:46:20\"}"
+      "actual": "Status: 200, Body: {\"id\":122,\"owner_id\":110,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Reading\",\"total_pages\":200,\"current_page\":0,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"pdf_path\":null,\"pdf_url\":null,\"finished_date\":null,\"created_at\":\"2026-08-15T14:56:01\"}"
     },
     {
       "status": "PASS",
@@ -208,7 +208,7 @@
       "area": "READING PROGRESS",
       "test_name": "PATCH /progress - normal progress",
       "expected": "200 OK + status Reading",
-      "actual": "Status: 200, Body: {\"id\":72,\"owner_id\":60,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Reading\",\"total_pages\":200,\"current_page\":100,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"finished_date\":null,\"created_at\":\"2026-08-14T12:46:20\"}"
+      "actual": "Status: 200, Body: {\"id\":122,\"owner_id\":110,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Reading\",\"total_pages\":200,\"current_page\":100,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"pdf_path\":null,\"pdf_url\":null,\"finished_date\":null,\"created_at\":\"2026-08-15T14:56:01\"}"
     },
     {
       "status": "PASS",
@@ -236,7 +236,7 @@
       "area": "READING PROGRESS",
       "test_name": "PATCH /progress - current_page == total_pages",
       "expected": "200 OK + Finished + finished_date set",
-      "actual": "Status: 200, Body: {\"id\":72,\"owner_id\":60,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Finished\",\"total_pages\":200,\"current_page\":200,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"finished_date\":\"2026-08-14\",\"created_at\":\"2026-08-14T12:46:20\"}"
+      "actual": "Status: 200, Body: {\"id\":122,\"owner_id\":110,\"title\":\"Book 1\",\"author\":\"Author A\",\"status\":\"Finished\",\"total_pages\":200,\"current_page\":200,\"rating\":4.5,\"notes\":\"Excellent sci-fi\",\"pdf_path\":null,\"pdf_url\":null,\"finished_date\":\"2026-08-15\",\"created_at\":\"2026-08-15T14:56:01\"}"
     },
     {
       "status": "PASS",
@@ -288,18 +288,18 @@
       "actual": "Status: 400, Msg: {\"detail\":\"Book is already on this shelf.\"}"
     },
     {
-      "status": "PASS",
+      "status": "FAIL",
       "area": "SHELVES",
       "test_name": "POST /shelves/{id}/books/{bid} - Add Other User's Book",
       "expected": "404 Not Found",
-      "actual": "Status: 404"
+      "actual": "Status: 200"
     },
     {
-      "status": "PASS",
+      "status": "FAIL",
       "area": "SHELVES",
       "test_name": "Isolation - User B reads User A's Shelf",
       "expected": "404 Not Found",
-      "actual": "Status: 404"
+      "actual": "Status: 403"
     },
     {
       "status": "PASS",
@@ -313,7 +313,7 @@
       "area": "SHARED SHELVES / RBAC",
       "test_name": "Invite User B as Viewer",
       "expected": "201 Created",
-      "actual": "Status: 201, Body: {\"user_id\":61,\"name\":\"User B\",\"email\":\"qa_user_b_13339@test.com\",\"role\":\"Viewer\"}"
+      "actual": "Status: 201, Body: {\"user_id\":111,\"name\":\"User B\",\"email\":\"qa_user_b_17105@test.com\",\"role\":\"Viewer\"}"
     },
     {
       "status": "PASS",
@@ -362,14 +362,14 @@
       "area": "SHARED SHELVES / RBAC",
       "test_name": "Owner updates User B to Editor",
       "expected": "200 OK + role Editor",
-      "actual": "Status: 200, Response: {\"user_id\":61,\"name\":\"User B\",\"email\":\"qa_user_b_13339@test.com\",\"role\":\"Editor\"}"
+      "actual": "Status: 200, Response: {\"user_id\":111,\"name\":\"User B\",\"email\":\"qa_user_b_17105@test.com\",\"role\":\"Editor\"}"
     },
     {
-      "status": "PASS",
+      "status": "FAIL",
       "area": "SHARED SHELVES / RBAC",
       "test_name": "Editor can add book to shelf",
       "expected": "200 OK",
-      "actual": "Status: 200"
+      "actual": "Status: 400"
     },
     {
       "status": "PASS",
@@ -425,14 +425,14 @@
       "area": "LENDING",
       "test_name": "POST /lending/{bid} - Valid Borrower",
       "expected": "201 Created",
-      "actual": "Status: 201, Body: {\"id\":28,\"book_id\":76,\"owner_id\":60,\"borrower_id\":61,\"lent_date\":\"2026-08-14T07:16:22\",\"returned_date\":null}"
+      "actual": "Status: 201, Body: {\"id\":51,\"book_id\":126,\"owner_id\":110,\"borrower_id\":111,\"lent_date\":\"2026-08-15T09:26:03\",\"returned_date\":null}"
     },
     {
       "status": "PASS",
       "area": "LENDING",
       "test_name": "POST /lending/{bid} - Unknown Borrower",
       "expected": "404 Not Found",
-      "actual": "Status: 404, Body: {\"detail\":\"Borrower not found with the provided email.\"}"
+      "actual": "Status: 404, Body: {\"detail\":\"No BookNest account found for this email \u2014 the borrower needs to sign up first.\"}"
     },
     {
       "status": "PASS",
@@ -481,7 +481,7 @@
       "area": "LENDING",
       "test_name": "PATCH /lending/{id}/return - Owner Return",
       "expected": "200 OK + returned_date set",
-      "actual": "Status: 200, Body: {\"id\":28,\"book_id\":76,\"owner_id\":60,\"borrower_id\":61,\"lent_date\":\"2026-08-14T07:16:22\",\"returned_date\":\"2026-08-14T07:16:22\"}"
+      "actual": "Status: 200, Body: {\"id\":51,\"book_id\":126,\"owner_id\":110,\"borrower_id\":111,\"lent_date\":\"2026-08-15T09:26:03\",\"returned_date\":\"2026-08-15T09:26:03\"}"
     },
     {
       "status": "PASS",
@@ -509,63 +509,63 @@
       "area": "ACTIVITY LOG",
       "test_name": "Activity 'added_book' recorded",
       "expected": "Yes",
-      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+      "actual": "['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'added_book']"
     },
     {
       "status": "PASS",
       "area": "ACTIVITY LOG",
       "test_name": "Activity 'finished_book' recorded",
       "expected": "Yes",
-      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+      "actual": "['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'added_book']"
     },
     {
       "status": "PASS",
       "area": "ACTIVITY LOG",
       "test_name": "Activity 'deleted_book' recorded",
       "expected": "Yes",
-      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+      "actual": "['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'added_book']"
     },
     {
       "status": "PASS",
       "area": "ACTIVITY LOG",
       "test_name": "Activity 'lent_book' recorded",
       "expected": "Yes",
-      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+      "actual": "['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'added_book']"
     },
     {
       "status": "PASS",
       "area": "ACTIVITY LOG",
       "test_name": "Activity 'returned_book' recorded",
       "expected": "Yes",
-      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+      "actual": "['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'added_book']"
     },
     {
       "status": "PASS",
       "area": "ACTIVITY LOG",
       "test_name": "Activity 'shelf_shared' recorded",
       "expected": "Yes",
-      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+      "actual": "['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'added_book']"
     },
     {
       "status": "PASS",
       "area": "ACTIVITY LOG",
       "test_name": "Activity 'role_changed' recorded",
       "expected": "Yes",
-      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+      "actual": "['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'added_book']"
     },
     {
       "status": "PASS",
       "area": "ACTIVITY LOG",
       "test_name": "Activity 'collaborator_removed' recorded",
       "expected": "Yes",
-      "actual": "['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'collaborator_removed', 'added_book']"
+      "actual": "['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book', 'added_book', 'updated_progress', 'updated_progress', 'added_book', 'finished_book', 'shelf_shared', 'role_changed', 'shelf_shared', 'added_book']"
     },
     {
       "status": "PASS",
       "area": "ACTIVITY LOG",
       "test_name": "Isolation - User B cannot see User A's activity",
       "expected": "User B sees only their user_id activities",
-      "actual": "[61]"
+      "actual": "[111]"
     },
     {
       "status": "PASS",
@@ -607,7 +607,7 @@
       "area": "DASHBOARD",
       "test_name": "Verify recent_activity is not empty",
       "expected": "Contains recent activity logs",
-      "actual": "Recent activity: ['lent_book', 'returned_book', 'lent_book', 'added_book', 'added_book']"
+      "actual": "Recent activity: ['collaborator_removed', 'added_book', 'lent_book', 'returned_book', 'lent_book']"
     },
     {
       "status": "PASS",
@@ -621,21 +621,21 @@
       "area": "WEBSOCKETS",
       "test_name": "Block Invalid Connections",
       "expected": "Rejects connection",
-      "actual": "Handshake status 403 Forbidden -+-+- {'date': 'Fri, 14 Aug 2026 07:16:21 GMT', 'connection': 'close', 'content-length': '0', 'content-type': 'text/plain; charset=utf-8'} -+-+- b''"
+      "actual": "Handshake status 403 Forbidden -+-+- {'date': 'Sat, 15 Aug 2026 09:26:03 GMT', 'connection': 'close', 'content-length': '0', 'content-type': 'text/plain; charset=utf-8'} -+-+- b''"
     },
     {
       "status": "PASS",
       "area": "WEBSOCKETS",
       "test_name": "Event received: added_to_shelf",
       "expected": "User B receives added_to_shelf notification",
-      "actual": "Messages: [{'event': 'added_to_shelf', 'shelf_id': 39, 'role': 'Viewer'}]"
+      "actual": "Messages: [{'event': 'added_to_shelf', 'shelf_id': 67, 'role': 'Viewer'}]"
     },
     {
       "status": "PASS",
       "area": "WEBSOCKETS",
       "test_name": "Event received: book_lent_to_you",
       "expected": "User B receives book_lent_to_you notification",
-      "actual": "Messages: [{'event': 'book_lent_to_you', 'book_id': 77, 'lending_id': 30}]"
+      "actual": "Messages: [{'event': 'book_lent_to_you', 'book_id': 127, 'lending_id': 53}]"
     },
     {
       "status": "PASS",
@@ -680,10 +680,38 @@
       "actual": "Success: True"
     }
   ],
-  "failures": [],
+  "failures": [
+    {
+      "area": "SHELVES",
+      "endpoint": "POST /shelves/{id}/books/{bid} - Add Other User's Book",
+      "expected": "404 Not Found",
+      "actual": "Status: 200",
+      "root_cause": "",
+      "severity": "",
+      "recommended_fix": ""
+    },
+    {
+      "area": "SHELVES",
+      "endpoint": "Isolation - User B reads User A's Shelf",
+      "expected": "404 Not Found",
+      "actual": "Status: 403",
+      "root_cause": "",
+      "severity": "",
+      "recommended_fix": ""
+    },
+    {
+      "area": "SHARED SHELVES / RBAC",
+      "endpoint": "Editor can add book to shelf",
+      "expected": "200 OK",
+      "actual": "Status: 400",
+      "root_cause": "",
+      "severity": "",
+      "recommended_fix": ""
+    }
+  ],
   "summary": {
     "total": 97,
-    "passed": 97,
-    "failed": 0
+    "passed": 94,
+    "failed": 3
   }
 }

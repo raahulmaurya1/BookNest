@@ -23,12 +23,13 @@ def lend_book(book_id: int, request: LendBookRequest, current_user: User, db: Se
             detail="Book not found or you do not own it.",
         )
 
-    # 2. Find the borrower by email
-    borrower = db.query(User).filter(User.email == request.borrower_email).first()
+    # 2. Find the borrower by email (case-insensitive, whitespace-trimmed)
+    normalized_email = request.borrower_email.strip().lower()
+    borrower = db.query(User).filter(User.email == normalized_email).first()
     if not borrower:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Borrower not found with the provided email.",
+            detail="No BookNest account found for this email — the borrower needs to sign up first.",
         )
 
     # 3. Prevent lending to yourself
@@ -72,8 +73,11 @@ def lend_book(book_id: int, request: LendBookRequest, current_user: User, db: Se
     return new_lending
 
 
-def return_book(lending_id: int, current_user: User, db: Session) -> Lending:
-    lending = db.query(Lending).filter(Lending.id == lending_id).first()
+def return_book(book_id: int, current_user: User, db: Session) -> Lending:
+    lending = db.query(Lending).filter(
+        Lending.book_id == book_id,
+        Lending.returned_date.is_(None)
+    ).first()
 
     if not lending:
         raise HTTPException(
@@ -81,11 +85,13 @@ def return_book(lending_id: int, current_user: User, db: Session) -> Lending:
             detail="Lending record not found.",
         )
 
-    # Only the owner can mark it as returned
-    if lending.owner_id != current_user.id:
+    is_owner = lending.owner_id == current_user.id
+    is_borrower = lending.borrower_id == current_user.id
+
+    if not is_owner and not is_borrower:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only the owner of the book can mark it as returned.",
+            detail="You don't have permission to modify this loan.",
         )
 
     if lending.returned_date is not None:
@@ -99,8 +105,9 @@ def return_book(lending_id: int, current_user: User, db: Session) -> Lending:
     db.commit()
     db.refresh(lending)
 
-    # Notify the borrower in real time (thread-safe — called from sync threadpool).
-    manager.notify_user_sync(lending.borrower_id, {
+    # Notify the other party in real time (thread-safe — called from sync threadpool).
+    other_party_id = lending.borrower_id if is_owner else lending.owner_id
+    manager.notify_user_sync(other_party_id, {
         "event": "book_returned",
         "book_id": lending.book_id,
         "lending_id": lending.id,
@@ -111,9 +118,15 @@ def return_book(lending_id: int, current_user: User, db: Session) -> Lending:
 
 def get_lent_books(current_user: User, db: Session) -> list[Lending]:
     # Books I have lent to others
-    return db.query(Lending).filter(Lending.owner_id == current_user.id).all()
+    return db.query(Lending).filter(
+        Lending.owner_id == current_user.id,
+        Lending.returned_date.is_(None)
+    ).all()
 
 
 def get_borrowed_books(current_user: User, db: Session) -> list[Lending]:
     # Books I am borrowing from others
-    return db.query(Lending).filter(Lending.borrower_id == current_user.id).all()
+    return db.query(Lending).filter(
+        Lending.borrower_id == current_user.id,
+        Lending.returned_date.is_(None)
+    ).all()
