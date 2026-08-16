@@ -7,7 +7,7 @@ from app.models.user import User
 from app.schemas.user import UserRegisterRequest
 from app.schemas.auth import UserLoginRequest
 from app.auth.password import hash_password, verify_password
-from app.auth.jwt import create_access_token
+from app.auth.jwt import create_access_token, create_refresh_token
 
 
 def register_user(request: UserRegisterRequest, db: Session) -> User:
@@ -50,5 +50,6 @@ def login_user(request: UserLoginRequest, db: Session) -> dict:
         )
 
     access_token = create_access_token(user_id=user.id)
+    refresh_token = create_refresh_token(user_id=user.id)
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}

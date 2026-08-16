@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAccessToken, clearTokens } from '../auth/token';
+import { getAccessToken, clearTokens, refreshAccessToken } from '../auth/token';
 
 // In development, Vite proxies this path to the FastAPI server. Set
 // VITE_API_URL for deployments that expose the API on a different origin.
@@ -38,10 +38,30 @@ apiClient.interceptors.request.use(
 // The backend currently issues access tokens only; it has no refresh endpoint.
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest?.url?.includes('/auth/login')) {
+    // Avoid intercepting 401s on login, refresh, or logout endpoints
+    const isAuthEndpoint = originalRequest?.url?.includes('/auth/login') || 
+                           originalRequest?.url?.includes('/auth/refresh') ||
+                           originalRequest?.url?.includes('/auth/logout');
+
+    if (error.response?.status === 401 && !isAuthEndpoint && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const newAccessToken = await refreshAccessToken();
+        if (newAccessToken) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return apiClient(originalRequest);
+        }
+      } catch (refreshError) {
+        clearTokens();
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+
+    if (error.response?.status === 401 && !isAuthEndpoint) {
       clearTokens();
       window.location.href = '/login';
     }

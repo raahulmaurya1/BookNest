@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 let refreshPromise = null;
 
 export const setAccessToken = (token) => {
@@ -24,18 +25,23 @@ export const refreshAccessToken = async () => {
 
   refreshPromise = new Promise(async (resolve, reject) => {
     try {
-      const response = await fetch('/api/auth/refresh', {
+      const response = await fetch(`${API_URL}/auth/refresh`, {
         method: 'POST',
         credentials: 'include',
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Refresh failed');
+        let errorMessage = 'Refresh failed';
+        try {
+          const error = await response.json();
+          errorMessage = error.detail || error.error || errorMessage;
+        } catch (e) {}
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
-      accessToken = data.accessToken;
+      const accessToken = data.access_token;
+      setAccessToken(accessToken);
       resolve(accessToken);
     } catch (error) {
       clearTokens();
@@ -46,6 +52,17 @@ export const refreshAccessToken = async () => {
   });
 
   return refreshPromise;
+};
+
+export const logoutBackend = async () => {
+  try {
+    await fetch(`${API_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch (error) {
+    console.error('Failed to logout backend', error);
+  }
 };
 
 export const isTokenExpired = (token) => {
