@@ -74,9 +74,10 @@ Beyond personal reading, BookNest also makes sharing easier. You can share shelv
 ---
 
 ## Architecture
+<div align="center">
+  <img src="https://github.com/raahulmaurya1/BookNest/blob/da01f60046fd82cf6429ec7d09e8b0e46f0734ea/BookNest_Architecture_Diagram.png" alt="BookNest Architecture Diagram" width="750">
+</div>
 
-<!-- ARCHITECTURE_DIAGRAM_PLACEHOLDER -->
-*(Architecture diagram goes here)*
 
 The frontend talks to the backend two ways: normal REST calls for everything CRUD-shaped, and a single WebSocket connection for anything that needs to show up live. On the backend, every request flows the same way regardless of which router it hits **Router → Service → Model** and all the actual business logic and permission checks live in the service layer, never in the route handler and never assumed to be handled by the frontend.
 
@@ -86,8 +87,9 @@ The frontend talks to the backend two ways: normal REST calls for everything CRU
 
 ## Data Model
 
-<!-- ER_DIAGRAM_PLACEHOLDER -->
-*(ER diagram goes here)*
+<div align="center">
+  <img src="https://github.com/raahulmaurya1/BookNest/blob/da01f60046fd82cf6429ec7d09e8b0e46f0734ea/ER_Diagram.png" alt="BookNest Database ER Diagram" width="750">
+</div>
 
 Everything hangs off `users`. Here's how the pieces connect:
 
