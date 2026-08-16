@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { authAPI } from '../api/auth';
-import { setAccessToken, clearTokens, getAccessToken } from './token';
+import { setAccessToken, clearTokens, getAccessToken, logoutBackend } from './token';
 import { initSocket, disconnectSocket } from '../websocket/socket';
 
 export const AuthContext = createContext();
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      // Logout is client-side because the backend uses stateless JWT access tokens.
+      await logoutBackend();
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
